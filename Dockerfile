@@ -1,35 +1,23 @@
-# Use Python 3.13 as base image
+# syntax=docker/dockerfile:1.7
+
 FROM python:3.13-slim
 
-# Set working directory
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
 WORKDIR /app
 
-# Install system dependencies and Node.js
-RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install uv
-RUN pip install --no-cache-dir uv
-
-# Copy project files
 COPY pyproject.toml uv.lock ./
-COPY requirements.txt ./
-COPY server.py ./
-COPY tools/ ./tools/
-COPY utils/ ./utils/
-COPY prompts/ ./prompts/
-COPY staticFiles/ ./staticFiles/
+RUN uv sync --frozen --no-dev --no-install-project
 
-# Install dependencies using uv
-RUN uv sync --frozen
+COPY . .
+RUN uv sync --frozen --no-dev
 
-# Expose port for HTTP transport
+ENV PATH="/app/.venv/bin:$PATH"
+
 EXPOSE 8000
-
-# Run MCP server (direct execution to use HTTP config from server.py)
-CMD ["uv", "run", "python", "server.py"]
-
+CMD ["python", "server.py"]
