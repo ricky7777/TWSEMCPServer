@@ -4,7 +4,7 @@
 #
 
 app = 'tw-stock-mcp'
-primary_region = 'nrt'
+primary_region = 'syd'
 
 [build]
 
