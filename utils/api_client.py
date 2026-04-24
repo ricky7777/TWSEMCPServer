@@ -12,9 +12,11 @@ logger = logging.getLogger(__name__)
 
 class TWSEAPIClient:
     """Client for Taiwan Stock Exchange API."""
-    
+
     # Global instance for backward compatibility
     _instance: Optional['TWSEAPIClient'] = None
+    # Last upstream URL fetched — class-level so decorators can read it without a reference
+    _last_upstream_url: str = ""
     
     def __init__(self, 
                  base_url: str = APIConfig.BASE_URL, 
@@ -48,6 +50,7 @@ class TWSEAPIClient:
             time.sleep(sleep_time)
         
         url = f"{self.base_url}{endpoint}"
+        TWSEAPIClient._last_upstream_url = url
         logger.info(f"Fetching TWSE data from {url}")
         
         try:
@@ -124,6 +127,7 @@ class TWSEAPIClient:
             logger.debug(f"Rate limiting: sleeping for {sleep_time:.2f} seconds")
             time.sleep(sleep_time)
 
+        TWSEAPIClient._last_upstream_url = url
         logger.info(f"Fetching JSON from {url} params={params}")
 
         try:
