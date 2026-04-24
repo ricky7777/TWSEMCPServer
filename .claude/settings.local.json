@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(flyctl deploy *)",
+      "Bash(curl -s -X POST https://tw-stock-mcp.fly.dev/mcp/ -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}')",
+      "Bash(flyctl status *)",
+      "Bash(curl -s https://tw-stock-mcp.fly.dev/health)",
+      "Bash(flyctl logs *)",
+      "Bash(curl -s https://tw-stock-mcp.fly.dev/)",
+      "Bash(curl *)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
